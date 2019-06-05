@@ -1,0 +1,31 @@
+{
+  "name": "cs493-final-project",
+  "version": "0.1.0",
+  "description": "CS493 Final Project at Oregon State University.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev": "NODE_ENV=development nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/osu-cs493-sp19/master-assignment-4.git"
+  },
+  "author": "Travis Whitehead <whitehet@oregonstate.edu>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/osu-cs493-sp19/final-project-mohamed/issues"
+  },
+  "homepage": "https://github.com/osu-cs493-sp19/final-project-mohamed#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.0",
+    "mongodb": "^3.2.5",
+    "morgan": "^1.9.1",
+    "multer": "^1.4.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.0"
+  }
+}
