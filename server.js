@@ -3,7 +3,7 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
 const api = require('./api');
-const { connectToDB } = require('./lib/mongo');
+const { connectToDB, db } = require('./lib/postgres');
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -29,7 +29,7 @@ app.use('*', function (req, res, next) {
   });
 });
 
-connectToDB(async () => {
+connectToDB(() => {
   app.listen(port, () => {
     console.log("== Server is running on port", port);
   });
