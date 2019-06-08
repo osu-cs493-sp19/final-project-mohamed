@@ -9,6 +9,6 @@ CREATE TABLE IF NOT EXISTS users (
   name TEXT NOT NULL,
   email TEXT NOT NULL,
   password TEXT NOT NULL,
-  role user_role NOT NULL,
+  role user_role NOT NULL DEFAULT 'student',
   PRIMARY KEY (id)
 );
