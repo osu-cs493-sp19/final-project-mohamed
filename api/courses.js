@@ -82,11 +82,16 @@ router.get('/:id', async (req, res, next) => {
   }
 })
 
-router.patch('/:id', async (req, res, next) => {
+router.patch('/:id', checkAuthToken, async (req, res, next) => {
   try {
     let course = await Course.findBy('id', req.params.id)
-    course = await course.update(req.body)
-    res.status(200).send(course)
+    if (! await User.canUpdateCourse(req.user, course.instructorId)) {
+      return res.status(403).send({
+        error: "Cannot update course without authentication as course instructor or admin."
+      })
+    }
+    await course.update(req.body)
+    res.status(200).send()
   } catch (err) {
     if (err.constructor.name === 'DBError') {
       if (err.type === 'NOT_FOUND') {
