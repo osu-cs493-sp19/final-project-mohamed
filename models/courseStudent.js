@@ -1,6 +1,7 @@
-const { Course } = require('./course')
 const { Model } = require('../lib/model')
 const { User } = require('./user')
+
+let Course = null
 
 class CourseStudent extends Model {
   static async enrolledStudents(courseId) {
@@ -31,6 +32,9 @@ class CourseStudent extends Model {
     const courseIds = enrollments.map(e => e.courseId);
     const params = [...Array(courseIds.length).keys()].map(k => `$${k + 3}`).join(', ')
     const whereQuery = `id IN (${params})`
+    if (Course === null) {
+      Course = require('./course').Course
+    }
     return await Course.all(0, 99999, { where: [whereQuery, courseIds] })
   }
 }
