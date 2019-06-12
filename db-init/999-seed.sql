@@ -41,12 +41,12 @@ INSERT INTO users (name, email, password, role) VALUES
   ('Adriena Habble', 'ahabble12@howstuffworks.com', '$2a$08$lhpjYJjgfaRNbkL3jbMvkuJ8TyFwonjnjSs/EeoCkaOwfMB7SRora', 'student'),
   ('Elga McIlvaney', 'emcilvaney13@nasa.gov', '$2a$08$TEtzoGV8Yulmy.eC/88nuOUw8MvSVqVNid23JiMa88fW1j8pRmpx6', 'student');
 
-INSERT INTO courses (subject, course_number, title, term, instructor_id) VALUES
+INSERT INTO courses (subject, number, title, term, instructor_id) VALUES
   ('CS', 493, 'Cloud Application Development', 'sp19', 6),
   ('CS', 480, 'Translators', 'sp19', 9),
   ('CS', 434, 'Machine Learning and Data Mining', 'sp19', 2),
   ('MTH', 341, 'Linear Algebra I', 'sp19', 9),
-  ('MTH', 342, 'Linear Algebra II', 'sp19', 10)
+  ('MTH', 342, 'Linear Algebra II', 'sp19', 10),
   ('CS', 175, 'Secure Communications & Social Movements', 'sp19', 5),
   ('CS', 419, 'Systems Security', 'w18', 3),
   ('CS', 420, 'Cyber Attack & Defense', 'f19', 3),

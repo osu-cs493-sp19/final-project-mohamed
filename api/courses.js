@@ -15,9 +15,6 @@ router.get('/', async (req, res) => {
     const params = ['subject', 'number', 'term'].filter(p => p in req.query)
     const paramVals = params.map(p => req.query[p])
     for (let i = 0; i < params.length; ++i) {
-      if (params[i] === 'number') {
-        params[i] = 'course_number'
-      }
       params[i] = `${params[i]} = $${i + 3}`
     }
     let whereConstraint = params.join(' AND ')
