@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const { Course } = require('../models/course')
 
-exports.router = router
+module.exports = router
 
 router.get('/', async (req, res) => {
   try {
@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
     const totalPages = Math.ceil(totalCourses / perPage)
     page = page > totalPages ? totalPages : page
     const offset = (page - 1) * perPage
-    
+
     const params = ['subject', 'number', 'term'].filter(p => p in req.query)
     const paramVals = params.map(p => req.query[p])
     for (let i = 0; i < params.length; ++i) {
