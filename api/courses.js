@@ -110,7 +110,13 @@ router.patch('/:id', checkAuthToken, async (req, res, next) => {
   }
 })
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', checkAuthToken, User.requireAdmin, async (req, res, next) => {
+  // Not authenticated or not admin
+  if (req.user == null) {
+    return res.status(403).send({
+      error: "Must be authenticated as admin to delete a course."
+    })
+  }
   try {
     const course = await Course.findBy('id', req.params.id)
     await course.destroy()
