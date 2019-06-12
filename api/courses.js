@@ -199,9 +199,14 @@ router.post('/:id/students', checkAuthToken, async (req, res, next) => {
 })
 
 
-router.get('/:id/roster', async (req, res, next) => {
+router.get('/:id/roster', checkAuthToken, async (req, res, next) => {
   try {
     const course = await Course.findBy('id', req.params.id)
+    if (! await User.courseInstructorOrAdmin(req.user, course.instructorId)) {
+      return res.status(403).send({
+        error: "Cannot get student roster without authentication as course instructor or admin."
+      })
+    }
     const students = await course.enrolledStudents()
     const csv = students.map(s => `${s.id},"${s.name}",${s.email}`).join('\n')
     res.type('text/csv').status(200).send(csv)
