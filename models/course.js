@@ -1,4 +1,4 @@
-const { db } = require('../lib/db')
+const { Model } = require('../lib/model')
 
 class Course extends Model {}
 

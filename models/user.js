@@ -1,5 +1,4 @@
 const bcrypt = require('bcryptjs')
-const { db } = require('../lib/postgres')
 const { Model } = require('../lib/model')
 
 class User extends Model {
@@ -40,6 +39,6 @@ User.prototype.transformations = {
       return await bcrypt.hash(pw, 8)
     }
   ]
-};
+}
 
 exports.User = User
