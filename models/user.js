@@ -35,6 +35,26 @@ class User extends Model {
       return true;
     }
   }
+
+  // Nullifies req.user if the user doesn't exist or isn't an admin
+  static async requireAdmin(req, res, next) {
+    if (req.user) {
+      try {
+        const user = await User.findBy('id', req.user);
+        if (user.role != 'admin') {
+          req.user = null;
+        }
+      } catch (err) {
+        if (err.constructor.name === 'DBError') {
+          if (err.type === 'NOT_FOUND') {
+            req.user = null;
+          }
+        }
+        throw err
+      }
+    }
+    next();
+  }
 }
 
 User.prototype.validations = {

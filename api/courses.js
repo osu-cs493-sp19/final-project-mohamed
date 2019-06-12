@@ -1,5 +1,7 @@
 const router = require('express').Router()
+const { checkAuthToken } = require('../lib/auth');
 const { Course } = require('../models/course')
+const { User } = require('../models/user');
 
 module.exports = router
 
@@ -36,7 +38,13 @@ router.get('/', async (req, res) => {
   }
 })
 
-router.post('/', async (req, res) => {
+router.post('/', checkAuthToken, User.requireAdmin, async (req, res) => {
+  // Not authenticated or not admin
+  if (req.user == null) {
+    return res.status(403).send({
+      error: "Must be authenticated as admin to create courses."
+    })
+  }
   try {
     const newCourse = await Course.create(req.body)
     res.status(201).json({id: newCourse.id.toString()});
