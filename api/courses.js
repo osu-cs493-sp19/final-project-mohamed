@@ -44,7 +44,7 @@ router.post('/', async (req, res) => {
     if (err.constructor.name === 'DBError') {
       if (err.type === 'VALIDATION_ERROR') {
         return res.status(400).send({
-          error: "The request body is invalid."
+          err
         })
       }
     }
