@@ -206,7 +206,9 @@ router.post('/:id/submissions', fileUpload, async (req, res, next) => {
 
     await uploadFile(filename, req.file.buffer)
 
-    res.status(200).send(submission)
+    res.status(200).json({
+      id: submission.id
+    });
   } catch (err) {
     if (err.constructor.name === 'DBError') {
       if (err.type === 'NOT_FOUND') {
