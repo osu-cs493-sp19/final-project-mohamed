@@ -11,8 +11,12 @@ const { Course } = require('./models/course')
 const { CourseStudent } = require('./models/courseStudent')
 const { User } = require('./models/user')
 
+const rateLimit = require('./lib/rateLimit')
+
 const app = express();
 const port = process.env.PORT || 8000;
+
+app.use(rateLimit(30))
 
 /*
  * Morgan is a popular logger.
