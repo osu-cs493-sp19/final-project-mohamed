@@ -8,6 +8,7 @@ const { connectToDB, db } = require('./lib/postgres');
 const { Assignment } = require('./models/assignment')
 const { AssignmentSubmission } = require('./models/assignmentSubmission')
 const { Course } = require('./models/course')
+const { CourseStudent } = require('./models/courseStudent')
 const { User } = require('./models/user')
 
 const app = express();
@@ -38,6 +39,7 @@ connectToDB(async () => {
   await Assignment.__initialize()
   await AssignmentSubmission.__initialize()
   await Course.__initialize()
+  await CourseStudent.__initialize()
   await User.__initialize()
 
   app.listen(port, () => {
