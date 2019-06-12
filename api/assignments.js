@@ -4,6 +4,7 @@ const crypto = require('crypto');
 
 const { createSignedUrl, uploadFile } = require('../lib/gcs')
 
+const { checkAuthToken } = require('../lib/auth')
 const { Assignment } = require('../models/assignment')
 const { AssignmentSubmission } = require('../models/assignmentSubmission')
 const { Course } = require('../models/course')
@@ -16,7 +17,7 @@ const fileUpload = multer({
   storage: multer.memoryStorage()
 }).single('file')
 
-router.post('/', async (req, res) => {
+router.post('/', checkAuthToken, async (req, res) => {
   try {
     const course = await Course.findBy('id', req.body.courseId);
     if (! await User.courseInstructorOrAdmin(req.user, course.instructorId)) {
@@ -60,7 +61,7 @@ router.get('/:id', async (req, res, next) => {
   }
 })
 
-router.patch('/:id', async (req, res, next) => {
+router.patch('/:id', checkAuthToken, async (req, res, next) => {
   try {
     let assignment = await Assignment.findBy('id', req.params.id)
     const course = await Course.findBy('id', assignment.courseId);
@@ -89,7 +90,7 @@ router.patch('/:id', async (req, res, next) => {
   }
 })
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', checkAuthToken, async (req, res, next) => {
   try {
     const assignment = await Assignment.findBy('id', req.params.id)
     const course = await Course.findBy('id', assignment.courseId);
@@ -114,7 +115,7 @@ router.delete('/:id', async (req, res, next) => {
   }
 })
 
-router.get('/:id/submissions', async (req, res, next) => {
+router.get('/:id/submissions', checkAuthToken, async (req, res, next) => {
   try {
     const assignment = await Assignment.findBy('id', req.params.id)
     const course = await Course.findBy('id', assignment.courseId);
