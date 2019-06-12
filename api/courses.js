@@ -1,5 +1,7 @@
 const router = require('express').Router()
+const { checkAuthToken } = require('../lib/auth');
 const { Course } = require('../models/course')
+const { User } = require('../models/user');
 
 module.exports = router
 
@@ -36,7 +38,13 @@ router.get('/', async (req, res) => {
   }
 })
 
-router.post('/', async (req, res) => {
+router.post('/', checkAuthToken, User.requireAdmin, async (req, res) => {
+  // Not authenticated or not admin
+  if (req.user == null) {
+    return res.status(403).send({
+      error: "Must be authenticated as admin to create courses."
+    })
+  }
   try {
     const newCourse = await Course.create(req.body)
     res.status(201).json({id: newCourse.id.toString()});
@@ -74,11 +82,16 @@ router.get('/:id', async (req, res, next) => {
   }
 })
 
-router.patch('/:id', async (req, res, next) => {
+router.patch('/:id', checkAuthToken, async (req, res, next) => {
   try {
     let course = await Course.findBy('id', req.params.id)
-    course = await course.update(req.body)
-    res.status(200).send(course)
+    if (! await User.courseInstructorOrAdmin(req.user, course.instructorId)) {
+      return res.status(403).send({
+        error: "Cannot update course without authentication as course instructor or admin."
+      })
+    }
+    await course.update(req.body)
+    res.status(200).send()
   } catch (err) {
     if (err.constructor.name === 'DBError') {
       if (err.type === 'NOT_FOUND') {
@@ -97,7 +110,13 @@ router.patch('/:id', async (req, res, next) => {
   }
 })
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', checkAuthToken, User.requireAdmin, async (req, res, next) => {
+  // Not authenticated or not admin
+  if (req.user == null) {
+    return res.status(403).send({
+      error: "Must be authenticated as admin to delete a course."
+    })
+  }
   try {
     const course = await Course.findBy('id', req.params.id)
     await course.destroy()
@@ -116,9 +135,14 @@ router.delete('/:id', async (req, res, next) => {
   }
 })
 
-router.get('/:id/students', async (req, res, next) => {
+router.get('/:id/students', checkAuthToken, async (req, res, next) => {
   try {
     const course = await Course.findBy('id', req.params.id)
+    if (! await User.courseInstructorOrAdmin(req.user, course.instructorId)) {
+      return res.status(403).send({
+        error: "Cannot view enrolled students without authentication as course instructor or admin."
+      })
+    }
     const students = await course.enrollments()
     res.status(200).send({
       students: students.map(s => s.studentId)
@@ -137,9 +161,14 @@ router.get('/:id/students', async (req, res, next) => {
   }
 })
 
-router.post('/:id/students', async (req, res, next) => {
+router.post('/:id/students', checkAuthToken, async (req, res, next) => {
   try {
     const course = await Course.findBy('id', req.params.id)
+    if (! await User.courseInstructorOrAdmin(req.user, course.instructorId)) {
+      return res.status(403).send({
+        error: "Cannot update enrolled students without authentication as course instructor or admin."
+      })
+    }
 
     if (!req.body || !(req.body.add || req.body.remove)) {
       return res.status(400).send({
@@ -170,9 +199,14 @@ router.post('/:id/students', async (req, res, next) => {
 })
 
 
-router.get('/:id/roster', async (req, res, next) => {
+router.get('/:id/roster', checkAuthToken, async (req, res, next) => {
   try {
     const course = await Course.findBy('id', req.params.id)
+    if (! await User.courseInstructorOrAdmin(req.user, course.instructorId)) {
+      return res.status(403).send({
+        error: "Cannot get student roster without authentication as course instructor or admin."
+      })
+    }
     const students = await course.enrolledStudents()
     const csv = students.map(s => `${s.id},"${s.name}",${s.email}`).join('\n')
     res.type('text/csv').status(200).send(csv)
