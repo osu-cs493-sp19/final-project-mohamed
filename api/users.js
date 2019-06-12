@@ -36,7 +36,13 @@ router.post('/', checkAuthToken,  async (req, res) => {
 });
 
 // Route to get a specific user.
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', checkAuthToken, async (req, res, next) => {
+  if (req.params.id != req.user) {
+    res.status(403).send({
+      error: "Cannot view users that you are not authenticated as."
+    });
+    return;
+  }
   try {
     const user = await User.findBy('id', req.params.id);
     delete user.password;
