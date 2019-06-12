@@ -1,6 +1,7 @@
 const router = require('express').Router();
 
-// XXX: Example
-// router.use('/businesses', require('./businesses'));
+router.use('/courses', require('./courses'));
+router.use('/assignments', require('./assignments'));
+router.use('/submissions', require('./submissions'));
 
 module.exports = router;

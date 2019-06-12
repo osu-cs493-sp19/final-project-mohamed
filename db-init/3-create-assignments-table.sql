@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS assignments (
+  id SERIAL NOT NULL,
+  course_id INT NOT NULL,
+  title TEXT NOT NULL,
+  points INT NOT NULL,
+  due TIMESTAMPTZ NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (course_id) REFERENCES courses (id) ON DELETE CASCADE
+);
