@@ -117,6 +117,12 @@ router.delete('/:id', async (req, res, next) => {
 router.get('/:id/submissions', async (req, res, next) => {
   try {
     const assignment = await Assignment.findBy('id', req.params.id)
+    const course = await Course.findBy('id', assignment.courseId);
+    if (! await User.courseInstructorOrAdmin(req.user, course.instructorId)) {
+      return res.status(403).send({
+        error: "Cannot view assignment submissions without authentication as course instructor or admin."
+      })
+    }
 
     let params = ['assignment_id']
     const paramVals = [assignment.id]
