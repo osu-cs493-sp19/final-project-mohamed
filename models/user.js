@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs')
 const { Model } = require('../lib/model')
 
+let CourseStudent = null; // Part of hacky workaround to circular dependency
+
 class User extends Model {
   static async authenticate(email, password) {
     try {
@@ -38,7 +40,7 @@ class User extends Model {
 
   // Determines if a given user is a course instructor or admin
   static async courseInstructorOrAdmin(userId, instructorId) {
-    // Fail if no authenticated user
+    // Fail if not authenticated
     if (! userId) {
       return false;
     }
@@ -49,6 +51,25 @@ class User extends Model {
     // Succeed if updater is admin
     const user = await User.findBy('id', userId);
     return user.role == 'admin';
+  }
+
+  static async isStudentInCourse(userId, courseId) {
+    // Fail if not authenticated
+    if (! userId) {
+      return false;
+    }
+    // Part of hacky workaround to circular dependency
+    if (CourseStudent == null) {
+      CourseStudent = require('./courseStudent').CourseStudent;
+    }
+    // Check if student is enrolled in course
+    const courses = await CourseStudent.enrolledCourses(userId);
+    for (let course of courses) {
+      if (courseId == course.id) {
+        return true;
+      }
+    }
+    return false;
   }
 
   // Nullifies req.user if the user doesn't exist or isn't an admin
