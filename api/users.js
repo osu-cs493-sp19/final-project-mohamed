@@ -9,10 +9,16 @@ const { CourseStudent } = require('../models/courseStudent');
 const { User } = require('../models/user');
 
 // Route to create a new user.
-router.post('/', async (req, res) => {
+router.post('/', checkAuthToken,  async (req, res) => {
   try {
-    const newUser = await User.create(req.body)
-    res.status(201).json({id: newUser.id.toString()});
+    if (await User.canCreateUser(req.user, req.body)) {
+      const newUser = await User.create(req.body)
+      res.status(201).json({id: newUser.id.toString()});
+    } else {
+      res.status(403).send({
+        error: "Cannot create non-student users unless authenticated as admin."
+      });
+    }
   } catch (err) {
     if (err.constructor.name === 'DBError') {
       if (err.type === 'VALIDATION_ERROR') {
