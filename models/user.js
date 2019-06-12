@@ -20,8 +20,19 @@ class User extends Model {
       throw err
     }
   }
+
+  // Determines if a given user has permissions to create another user based on its contents
+  // Returns false if not authorized and true if authorized or there's a validation issue
+  static async canCreateUser(creatorId, requestBody) {
+    if (! requestBody.role) { return true; } // Let validation catch this
+    if (! creatorId) {
+      return requestBody.role == 'student';
+    }
+    if (requestBody.role == 'instructor' || requestBody.role == 'admin') {
+      const user = await User.findBy('id', creatorId);
+      return user.role == 'admin';
     } else {
-      return null
+      return true;
     }
   }
 }
