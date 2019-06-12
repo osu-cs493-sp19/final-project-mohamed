@@ -192,3 +192,24 @@ router.get('/:id/roster', async (req, res, next) => {
     });
   }
 })
+
+router.get('/:id/assignments', async (req, res, next) => {
+  try {
+    const course = await Course.findBy('id', req.params.id)
+    const assignments = await course.assignments()
+    res.status(200).send({
+      assignments: assignments.map(a => a.id)
+    })
+  } catch (err) {
+    if (err.constructor.name === 'DBError') {
+      if (err.type === 'NOT_FOUND') {
+        return next()
+      }
+    }
+
+    console.error(err);
+    res.status(500).send({
+      error: "Error retrieving assignments for course."
+    });
+  }
+})

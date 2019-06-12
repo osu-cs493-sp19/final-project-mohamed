@@ -1,7 +1,12 @@
 const { Model } = require('../lib/model')
+const { Assignment } = require('./assignment')
 const { CourseStudent } = require('./courseStudent')
 
 class Course extends Model {
+  async assignments() {
+    return await Assignment.all(0, 99999, { where: ['course_id = $3', [this.id]] })
+  }
+
   async enrollments() {
     // all requires a per page limit...99999 is just arbitrary
     return await CourseStudent.all(0, 99999, { where: ['course_id = $3', [this.id]] })
