@@ -92,6 +92,12 @@ router.patch('/:id', async (req, res, next) => {
 router.delete('/:id', async (req, res, next) => {
   try {
     const assignment = await Assignment.findBy('id', req.params.id)
+    const course = await Course.findBy('id', assignment.courseId);
+    if (! await User.courseInstructorOrAdmin(req.user, course.instructorId)) {
+      return res.status(403).send({
+        error: "Cannot create assignment without authentication as course instructor or admin."
+      })
+    }
     await assignment.destroy()
     res.status(204).send()
   } catch (err) {
