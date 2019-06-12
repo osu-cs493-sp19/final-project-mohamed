@@ -4,6 +4,8 @@ CREATE TABLE IF NOT EXISTS assignment_submissions (
   student_id INT NOT NULL,
   enrollment_id INT NOT NULL,
   submitted_at TIMESTAMPTZ NOT NULL,
+  original_filename TEXT NOT NULL,
+  gcs_filename TEXT NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY (assignment_id) REFERENCES assignments (id) ON DELETE CASCADE,
   FOREIGN KEY (student_id) REFERENCES users (id) ON DELETE CASCADE,
