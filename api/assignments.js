@@ -174,9 +174,14 @@ router.get('/:id/submissions', checkAuthToken, async (req, res, next) => {
   }
 })
 
-router.post('/:id/submissions', fileUpload, async (req, res, next) => {
+router.post('/:id/submissions', checkAuthToken, fileUpload, async (req, res, next) => {
   try {
     const assignment = await Assignment.findBy('id', req.params.id)
+    if (! await User.isStudentInCourse(req.user, assignment.courseId)) {
+      return res.status(403).send({
+        error: "Cannot submit assignment without authentication as student enrolled in course."
+      })
+    }
 
     if (!req.file || !(req.body.studentId && req.body.assignmentId)) {
       return res.status(400).send({
