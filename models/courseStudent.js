@@ -1,3 +1,4 @@
+const { Course } = require('./course')
 const { Model } = require('../lib/model')
 const { User } = require('./user')
 
@@ -20,6 +21,17 @@ class CourseStudent extends Model {
       values: [courseId].concat(students)
     }
     return await this.rawQuery(query)
+  }
+
+  static async enrolledCourses(studentId) {
+    const enrollments = await this.all(0, 99999, { where: ['student_id = $3', [studentId]] })
+    if (enrollments.length < 1) {
+      return []
+    }
+    const courseIds = enrollments.map(e => e.courseId);
+    const params = [...Array(courseIds.length).keys()].map(k => `$${k + 3}`).join(', ')
+    const whereQuery = `id IN (${params})`
+    return await Course.all(0, 99999, { where: [whereQuery, courseIds] })
   }
 }
 
