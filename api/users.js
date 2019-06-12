@@ -1,5 +1,9 @@
 const router = require('express').Router();
 
+const {
+  checkAuthToken,
+  generateAuthToken
+} = require('../lib/auth');
 const { Course } = require('../models/course');
 const { CourseStudent } = require('../models/courseStudent');
 const { User } = require('../models/user');
@@ -49,6 +53,27 @@ router.get('/:id', async (req, res, next) => {
     console.error(err);
     res.status(500).send({
       error: "Error retrieving user. Please try again later"
+    });
+  }
+});
+
+// Route to generate a JWT token for authentication.
+router.post('/login', async (req, res) => {
+  if (req.body && req.body.email && req.body.password) {
+    const user = await User.authenticate(req.body.email, req.body.password);
+    if (user) {
+      const token = generateAuthToken(user.id);
+      res.status(200).send({
+        token: token
+      });
+    } else {
+      res.status(401).send({
+        error: "The specified credentials were invalid."
+      });
+    }
+  } else {
+    res.status(400).send({
+      error: "Login request requires email and password."
     });
   }
 });

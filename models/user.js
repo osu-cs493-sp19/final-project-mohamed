@@ -3,10 +3,23 @@ const { Model } = require('../lib/model')
 
 class User extends Model {
   static async authenticate(email, password) {
-    const user = User.findBy('email', email)
-    const match = await bcrypt.compare(password, user.password)
-    if (match) {
-      return user
+    try {
+      const user = await User.findBy('email', email)
+      const match = await bcrypt.compare(password, user.password)
+      if (match) {
+        return user
+      } else {
+        return null
+      }
+    } catch (err) {
+      if (err.constructor.name === 'DBError') {
+        if (err.type === 'NOT_FOUND') {
+          return null
+        }
+      }
+      throw err
+    }
+  }
     } else {
       return null
     }
