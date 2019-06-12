@@ -6,7 +6,9 @@ const { createSignedUrl, uploadFile } = require('../lib/gcs')
 
 const { Assignment } = require('../models/assignment')
 const { AssignmentSubmission } = require('../models/assignmentSubmission')
+const { Course } = require('../models/course')
 const { CourseStudent } = require('../models/courseStudent')
+const { User } = require('../models/user')
 
 module.exports = router
 
@@ -16,6 +18,12 @@ const fileUpload = multer({
 
 router.post('/', async (req, res) => {
   try {
+    const course = await Course.findBy('id', req.body.courseId);
+    if (! await User.courseInstructorOrAdmin(req.user, course.instructorId)) {
+      return res.status(403).send({
+        error: "Cannot create assignment without authentication as course instructor or admin."
+      })
+    }
     const assignment = await Assignment.create(req.body)
     res.status(201).send(assignment)
   } catch (err) {
