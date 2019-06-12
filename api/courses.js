@@ -15,9 +15,6 @@ router.get('/', async (req, res) => {
     const params = ['subject', 'number', 'term'].filter(p => p in req.query)
     const paramVals = params.map(p => req.query[p])
     for (let i = 0; i < params.length; ++i) {
-      if (params[i] === 'number') {
-        params[i] = 'course_number'
-      }
       params[i] = `${params[i]} = $${i + 3}`
     }
     let whereConstraint = params.join(' AND ')
@@ -47,7 +44,7 @@ router.post('/', async (req, res) => {
     if (err.constructor.name === 'DBError') {
       if (err.type === 'VALIDATION_ERROR') {
         return res.status(400).send({
-          error: "The request body is invalid."
+          err
         })
       }
     }
