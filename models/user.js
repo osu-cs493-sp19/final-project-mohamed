@@ -36,18 +36,18 @@ class User extends Model {
     }
   }
 
-  // Determines if a given user has permissions to update a course
-  static async canUpdateCourse(updaterId, instructorId) {
+  // Determines if a given user is a course instructor or admin
+  static async courseInstructorOrAdmin(userId, instructorId) {
     // Fail if no authenticated user
-    if (! updaterId) {
+    if (! userId) {
       return false;
     }
     // Succeed if updater is course instructor
-    if (instructorId == updaterId) {
+    if (userId == instructorId) {
       return true;
     }
     // Succeed if updater is admin
-    const user = await User.findBy('id', updaterId);
+    const user = await User.findBy('id', userId);
     return user.role == 'admin';
   }
 

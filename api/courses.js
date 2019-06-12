@@ -85,7 +85,7 @@ router.get('/:id', async (req, res, next) => {
 router.patch('/:id', checkAuthToken, async (req, res, next) => {
   try {
     let course = await Course.findBy('id', req.params.id)
-    if (! await User.canUpdateCourse(req.user, course.instructorId)) {
+    if (! await User.courseInstructorOrAdmin(req.user, course.instructorId)) {
       return res.status(403).send({
         error: "Cannot update course without authentication as course instructor or admin."
       })
@@ -135,9 +135,14 @@ router.delete('/:id', checkAuthToken, User.requireAdmin, async (req, res, next) 
   }
 })
 
-router.get('/:id/students', async (req, res, next) => {
+router.get('/:id/students', checkAuthToken, async (req, res, next) => {
   try {
     const course = await Course.findBy('id', req.params.id)
+    if (! await User.courseInstructorOrAdmin(req.user, course.instructorId)) {
+      return res.status(403).send({
+        error: "Cannot view enrolled students without authentication as course instructor or admin."
+      })
+    }
     const students = await course.enrollments()
     res.status(200).send({
       students: students.map(s => s.studentId)
