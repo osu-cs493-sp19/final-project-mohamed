@@ -3,3 +3,6 @@ node_modules/
 
 # MacOS Garbage
 .DS_Store
+
+# Don't accidentally push this key...
+gcs-sa.json
