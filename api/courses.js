@@ -161,9 +161,14 @@ router.get('/:id/students', checkAuthToken, async (req, res, next) => {
   }
 })
 
-router.post('/:id/students', async (req, res, next) => {
+router.post('/:id/students', checkAuthToken, async (req, res, next) => {
   try {
     const course = await Course.findBy('id', req.params.id)
+    if (! await User.courseInstructorOrAdmin(req.user, course.instructorId)) {
+      return res.status(403).send({
+        error: "Cannot update enrolled students without authentication as course instructor or admin."
+      })
+    }
 
     if (!req.body || !(req.body.add || req.body.remove)) {
       return res.status(400).send({
