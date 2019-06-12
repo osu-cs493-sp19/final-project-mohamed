@@ -39,7 +39,7 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const newCourse = await Course.create(req.body)
-    res.status(201).send(newCourse)
+    res.status(201).json({id: newCourse.id.toString()});
   } catch (err) {
     if (err.constructor.name === 'DBError') {
       if (err.type === 'VALIDATION_ERROR') {
