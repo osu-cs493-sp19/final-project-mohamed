@@ -63,6 +63,12 @@ router.get('/:id', async (req, res, next) => {
 router.patch('/:id', async (req, res, next) => {
   try {
     let assignment = await Assignment.findBy('id', req.params.id)
+    const course = await Course.findBy('id', assignment.courseId);
+    if (! await User.courseInstructorOrAdmin(req.user, course.instructorId)) {
+      return res.status(403).send({
+        error: "Cannot create assignment without authentication as course instructor or admin."
+      })
+    }
     assignment = await assignment.update(req.body)
     res.status(200).send(assignment)
   } catch (err) {
