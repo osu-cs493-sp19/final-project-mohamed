@@ -158,7 +158,11 @@ router.get('/:id/submissions', checkAuthToken, async (req, res, next) => {
     }
 
     res.status(200).send({
-      submissions
+      submissions,
+      pageNumber: page,
+      totalPages: totalPages === 0 ? 1 : totalPages,
+      pageSize: perPage,
+      totalCount: totalSubmissions
     })
   } catch (err) {
     if (err.constructor.name === 'DBError') {

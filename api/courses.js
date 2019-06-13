@@ -7,28 +7,37 @@ module.exports = router
 
 router.get('/', async (req, res) => {
   try {
+    const params = ['subject', 'number', 'term'].filter(p => p in req.query)
+    const paramVals = params.map(p => req.query[p])
+    const countParams = []
+    for (let i = 0; i < params.length; ++i) {
+      countParams.push(`${params[i]} = $${i + 1}`)
+      params[i] = `${params[i]} = $${i + 3}`
+    }
+    let whereConstraint = params.join(' AND ')
+    let countWhereConstraint = countParams.join(' AND ')
+
+    if (whereConstraint.length < 1) {
+      whereConstraint = []
+      countWhereConstraint = []
+    } else {
+      whereConstraint = [whereConstraint, paramVals]
+      countWhereConstraint = [countWhereConstraint, paramVals]
+    }
+
     let page = parseInt(req.query.page) || 1
     const perPage = 10
-    const totalCourses = await Course.count()
+    const totalCourses = await Course.count({ where: countWhereConstraint })
     const totalPages = Math.ceil(totalCourses / perPage)
     page = page > totalPages ? totalPages : page
     const offset = (page - 1) * perPage
 
-    const params = ['subject', 'number', 'term'].filter(p => p in req.query)
-    const paramVals = params.map(p => req.query[p])
-    for (let i = 0; i < params.length; ++i) {
-      params[i] = `${params[i]} = $${i + 3}`
-    }
-    let whereConstraint = params.join(' AND ')
-
-    if (whereConstraint.length < 1) {
-      whereConstraint = []
-    } else {
-      whereConstraint = [whereConstraint, paramVals]
-    }
-
     res.status(200).send({
-      courses: await Course.all(offset, perPage, { where: whereConstraint })
+      courses: await Course.all(offset, perPage, { where: whereConstraint }),
+      pageNumber: page,
+      totalPages,
+      pageSize: perPage,
+      totalCount: totalCourses
     })
   } catch (err) {
     console.log(' -- Error:', err)
