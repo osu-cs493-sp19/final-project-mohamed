@@ -6,3 +6,6 @@ node_modules/
 
 # Don't accidentally push this key...
 gcs-sa.json
+
+tex/report.aux
+tex/report.log
