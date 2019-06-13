@@ -92,6 +92,6 @@ Finally, we decided to use Google Cloud Storage (GCS) so we don't have to worry 
 
 Overall, we are happy with the design of the program. Using Redis to rate-limit and GCS to serve files were both easy to implement and work very well. Storing all of the entity data in PostgreSQL also worked well, but the relational database libraries in Node.js can be awkward to work with. Unlike with MongoDB, which works naturally with JSON data, using the PostgreSQL library requires large amounts of raw SQL queries that end up becoming very reptitive.
 
-So the biggest part of the program that we would change is to use an ORM library to work with the database, instead of writing raw queries and converting the results into JavaScript objects. Give the small scope of the application, using an ORM would have been appropriate for now.
+So the biggest part of the program that we would change is to use an ORM library to work with the database, instead of writing raw queries and converting the results into JavaScript objects. Given the small scope of the application, using an ORM would have been appropriate for now.
 
 \end{document}
