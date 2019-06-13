@@ -47,12 +47,12 @@ INSERT INTO courses (subject, number, title, term, instructor_id) VALUES
   ('CS', 434, 'Machine Learning and Data Mining', 'sp19', 2),
   ('MTH', 341, 'Linear Algebra I', 'sp19', 9),
   ('MTH', 342, 'Linear Algebra II', 'sp19', 10),
-  ('CS', 175, 'Secure Communications & Social Movements', 'sp19', 5),
-  ('CS', 419, 'Systems Security', 'w18', 3),
-  ('CS', 420, 'Cyber Attack & Defense', 'f19', 3),
-  ('CS', 434, 'Defense Against the Dark Arts', 'w17', 4),
+  ('CS', 175, 'Secure Communications & Social Movements', 'sp19', 2),
+  ('CS', 419, 'Systems Security', 'w18', 6),
+  ('CS', 420, 'Cyber Attack & Defense', 'f19', 6),
+  ('CS', 434, 'Defense Against the Dark Arts', 'w17', 2),
   ('CS', 344, 'Operating Systems I', 'f18', 2),
-  ('CS', 444, 'Operating Systems II', 'w18', 3),
+  ('CS', 444, 'Operating Systems II', 'w18', 6),
   ('CS', 361, 'Software Engineering I', 'f19', 10);
 
 INSERT INTO assignments (course_id, title, points, due) VALUES
